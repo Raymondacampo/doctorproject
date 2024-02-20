@@ -37,19 +37,29 @@ button {
 
 
 // index
-
+::placeholder{
+    color: rgba(107, 107, 107, 0.685);
+    opacity: 1;
+}
 .select_father{
     display: flex;
     justify-content: space-around;
     .select_container{
         display: block;
         height: 50px;
-        .select_button{
+        .select_sb{
+            height: 25px;
             margin: 10px 10px;
+            border-radius: 25px;
+            border: 1px rgb(85, 85, 85);
+            padding: 6px;
+            border-style: inset;
         }
         .spe_cont{
-            box-shadow: 1px 1px 4px black;
-            border-radius: 5px;
+            max-height: 150px;
+            overflow: auto;
+            box-shadow: 1px 1px 5px black;
+            border-radius: 6px;
             position: absolute;
                 button{
                     width: 200px;
@@ -60,7 +70,7 @@ button {
                     border: 5px; 
                 }
                 button:hover{
-                    background-color: rgb(226, 226, 226);
+                    background-color: rgba(234, 234, 234, 0.611);
                 }
         }
     }

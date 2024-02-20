@@ -29,17 +29,28 @@ button {
   height: 11dvh;
   background-color: #2caf85; }
 
+::placeholder {
+  color: rgba(107, 107, 107, 0.685);
+  opacity: 1; }
+
 .select_father {
   display: flex;
   justify-content: space-around; }
   .select_father .select_container {
     display: block;
     height: 50px; }
-    .select_father .select_container .select_button {
-      margin: 10px 10px; }
+    .select_father .select_container .select_sb {
+      height: 25px;
+      margin: 10px 10px;
+      border-radius: 25px;
+      border: 1px #555555;
+      padding: 6px;
+      border-style: inset; }
     .select_father .select_container .spe_cont {
-      box-shadow: 1px 1px 4px black;
-      border-radius: 5px;
+      max-height: 150px;
+      overflow: auto;
+      box-shadow: 1px 1px 5px black;
+      border-radius: 6px;
       position: absolute; }
       .select_father .select_container .spe_cont button {
         width: 200px;
@@ -49,6 +60,6 @@ button {
         align-items: center;
         border: 5px; }
       .select_father .select_container .spe_cont button:hover {
-        background-color: #e2e2e2; }
+        background-color: rgba(234, 234, 234, 0.611); }
 
 /*# sourceMappingURL=style.css.map */

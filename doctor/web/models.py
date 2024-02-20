@@ -8,6 +8,11 @@ class Ensurance(models.Model):
 
     def __str__(self):
         return f"{self.name}, {self.plan}."
+    
+    def serialize(self):
+        return{
+            'name':self.name
+        }
 
 class Speciality(models.Model):
     speciality = models.CharField(max_length=100)
@@ -17,7 +22,7 @@ class Speciality(models.Model):
     
     def serialize(self):
         return{
-            'speciality':self.speciality
+            'name':self.speciality
         }
 
 class Clinic(models.Model):
@@ -28,6 +33,11 @@ class Clinic(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+    
+    def serialize(self):
+        return{
+            'name':self.name
+        }
 
 class Doctor(models.Model):
     name = models.CharField(max_length=200)
