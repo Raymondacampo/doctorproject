@@ -11,7 +11,8 @@ class Ensurance(models.Model):
     
     def serialize(self):
         return{
-            'name':self.name
+            'id':self.id,
+            'name':f"{self.name} {self.plan}"
         }
 
 class Speciality(models.Model):
@@ -22,6 +23,7 @@ class Speciality(models.Model):
     
     def serialize(self):
         return{
+            'id':self.id,
             'name':self.speciality
         }
 
@@ -36,6 +38,7 @@ class Clinic(models.Model):
     
     def serialize(self):
         return{
+            'id':self.id,
             'name':self.name
         }
 
@@ -45,6 +48,20 @@ class Doctor(models.Model):
     clinic = models.ManyToManyField(Clinic, blank=True,  related_name="doctors")
     availability = models.CharField(max_length=500)
     contact = models.CharField(max_length=500)
-
+    ensurance = models.ManyToManyField(Ensurance, related_name='doctors')
     def __str__(self):
         return f"{self.name}"
+    
+    def many(self):
+        manylist = ''
+        for s in self.speciality.all():
+            s = s.serialize()
+            manylist = manylist + f'{s["name"]}'
+        return manylist
+
+    def serialize(self):
+        return{
+            'id':self.id,
+            'name':self.name,
+            'speciality':self.many()
+        }
