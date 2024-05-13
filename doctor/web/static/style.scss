@@ -64,16 +64,15 @@ input[type="submit"]:hover{
   }
 
 .bx_s{
-   box-shadow: 1px 0px 7px rgba(0, 0, 0, 0.275); 
+   box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.275); 
 }
 
 #nav_bar{
     display: flex;
     justify-content: space-around;
     align-items: center;
-    height: 10dvh;
+    height: 9dvh;
     background-color: rgb(255, 255, 255);
-    background-image: none, url('/static/images/whitebg2.webp');
     
     .nav_logo{
         height: 68px;
@@ -314,7 +313,102 @@ input[type="submit"]:hover{
     }
 
 }
+.select_container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 70px;
+    width: 100%;
+    .align_h{
+        width: 100%;
+        height: 12vh;
+        min-width: 150px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        h2{
+            width: 13vw;
+            text-align: left;
+            font-weight: 600;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.145);
+        }  
+    }
+    .select_sb{
+        padding: 6px;
+        border-style: inset;
+        font-weight: 600;
+        align-items: center;
+        background-color: white;
+    }
+    
+    .bt{
+        height: 35px;
+        width: 14vw;
+        min-width: 150px;
+        border-radius: 25px;
+        border: 1px rgba(255, 255, 255, 0.396);
+        border-style: outset;
+        box-shadow: 1px 1px 4px rgb(167, 167, 167);
+        cursor: pointer;  
+        padding: 0px;
+        font-weight: 600;
+    }
+    .na{
+        color: rgba(66, 66, 66, 0.418);
+    }
+    .ni{
+        color: rgb(66, 66, 66);
+    }
+    .bt:hover{
+        opacity: 100;
+        transition: 0.5s;
+        box-shadow: 2px 2px 5px rgb(43, 43, 43);
+    }
 
+    .spe_disp{
+        position: absolute;
+        margin-top: 12%;
+        height: 50px;
+        width: 85%;
+        .shadow{
+            box-shadow: 1px 1px 3px black;
+            border-radius: 15px;
+        }
+        .tb{
+            height: 3vh;
+            width: 95%;
+            border-radius: 15px;
+            border: none;
+        }
+        .tb:focus{
+            border-color: white;
+        }
+
+        .inv{
+            display: none;
+        }
+
+        .spe_cont{
+            overflow-y: scroll;
+            max-height: 160px;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+
+                button{
+                    width: 100%;
+                    height: 45px;
+                    display: block;
+                    font-size: 100%;
+                    margin: 0px;
+                }
+
+        }
+        .spe_cont::-webkit-scrollbar {
+            display: none;
+        }
+    }
+}
 // DOCTORS SEARCH
 #doctors_container{
     width: 70vw;
@@ -844,12 +938,11 @@ a:hover{
             justify-content: center;
             margin: 5px;
             .img_myprof{
-                border-radius: 100px; 
-                max-height: 200px;
-                max-width: 200px;
+                height: 200px;
+                width: 200px;
                 img{
-                    max-width: 90%;
-                    border-radius: 150px; 
+                    max-width: 100%;
+                    border-radius: 150px;
                 }
                 
             }
@@ -877,16 +970,55 @@ a:hover{
     align-items: center;
     justify-content: space-around;
     background-color: rgb(248, 254, 255);
+
+
+
     div{
         text-align: center;
-        img{
-            border-radius: 50px;
+    }}
+
+.img_mydates{
+    height: 110px;
+    width: 110px;
+    align-items: center;
+    display: flex;
+    border-radius: 150px;
+    img{
+        border-radius: 150px;
+        width: 100%;
+        height: 100%;
+    }        
+} 
+
+.fav_doctors{
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 600px;
+    .fav_docs{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 20px 20px;
+        padding: 5px;
+        border-radius: 5px;
+        height: 150px;
+        width: 150px;
+        text-align: center;
+        a{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
     }
 }
+
 
 @media(max-width:610px){
     .upcoming_date{
         min-width: $mobileWidth;
     }
 }
+
+
+

@@ -1,7 +1,7 @@
 from django.db import models
 from multiselectfield import MultiSelectField
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.models import User
+from django.conf import settings
 import datetime
 # Create your models here.
 
@@ -22,10 +22,11 @@ class Ensurance(models.Model):
             'img':self.logo
         }
 
-class appUsers(models.Model):
-    user = models.OneToOneField(User, on_delete = models.CASCADE, default=1,  related_name='user')
+class User(AbstractUser):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete = models.CASCADE, default=1,  related_name='appuser')
+    email = models.EmailField(unique=True)
     profilePicture = models.URLField(default='https://i.imgflip.com/6yvpkj.jpg')
-    ensurance = models.ManyToManyField(Ensurance, blank=True, related_name='clients')
+    ensurance = models.ManyToManyField(Ensurance, blank=True, related_name='appuser')
     def __str__(self) -> str:
         return f'{self.user}'
     
@@ -61,22 +62,23 @@ class Clinic(models.Model):
 
 
 class Doctor(models.Model):
-    name = models.CharField(max_length=200)
-    speciality = models.ManyToManyField(Speciality, related_name="doctors")
+    doctorUser = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete = models.CASCADE, default=1,  related_name='doctor')
+    speciality = models.ManyToManyField(Speciality, blank=True, related_name="doctors")
     clinic = models.ManyToManyField(Clinic, blank=True,  related_name="doctors")
     availability = models.CharField(max_length=500)
     contact = models.CharField(max_length=500)
     ensurance = models.ManyToManyField(Ensurance, related_name='doctors')
     image = models.URLField(default='https://i.imgflip.com/6yvpkj.jpg')
     description = models.CharField(max_length=400, blank=True)
+
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.doctorUser.name}"
     
 
     def serialize(self):
         return{
             'id':self.id,
-            'name':self.name,
+            'name':self.doctorUser.name,
             'speciality':[f' {s.speciality}' for s in self.speciality.all()],
             'image':self.image,
             'clinic':[c.name for c in self.clinic.all()],
@@ -172,8 +174,9 @@ class ClientDates(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete = models.CASCADE, default=1, related_name='clientDates')
     clinic = models.ForeignKey(Clinic, on_delete = models.CASCADE, default=1, related_name='clientDates')
     date = models.DateTimeField(default=datetime.datetime.now())
-    client = models.ForeignKey(appUsers, on_delete = models.CASCADE, default=1,  related_name='clientDates')
-    
+    client = models.ForeignKey(User, on_delete = models.CASCADE, default=1,  related_name='clientDates')
+    isActive = models.BooleanField(default=True)
+
     def __str__(self):
         return f'{self.client} date with {self.doctor} on {self.date.strftime("%c")}'
     

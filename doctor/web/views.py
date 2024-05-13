@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from .models import Speciality, Ensurance, Clinic, Doctor, Dates, ClientDates, appUsers
+from .models import Speciality, Ensurance, Clinic, Doctor, Dates, ClientDates
 from django import forms
 from django.db import IntegrityError
 from django.http import JsonResponse
@@ -19,6 +19,16 @@ class createUser(forms.Form):
     password2 = forms.CharField(widget=forms.PasswordInput(), min_length=8)
     email = forms.EmailField()
 
+ens_choices = [(e.id, e.name) for e in Ensurance.objects.all()]
+class createDocUser(forms.Form):
+    doc_fname = forms.CharField(max_length=64, widget=forms.TextInput(attrs={'placeholder':'Your First Name', 'class':'bx_s'}))
+    doc_lname = forms.CharField(max_length=64, widget=forms.TextInput(attrs={'placeholder':'Your Last Name', 'class':'bx_s'}))
+    email = forms.EmailField(widget=forms.TextInput(attrs={'placeholder':'juanperez@email.com', 'class':'bx_s'}))    
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder':'Your Password', 'class':'bx_s', 'onkeyup':'reset_input_msg("password_div", "password_message")'}), min_length=8)
+    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder':'Confirm Password', 'class':'bx_s', 'onkeyup':'reset_input_msg("confirmation_div", "password_message")'}), min_length=8)
+    phone = forms.CharField(max_length=64, widget=forms.TextInput(attrs={'placeholder':'(555) 555-555', 'class':'bx_s', 'font-size':'24px'}))
+    username = forms.CharField(max_length=64, widget=forms.TextInput(attrs={'placeholder':'Your Username', 'class':'bx_s', 'onkeyup':'reset_input_msg("username_div", "username_message")'}))
+    # npi = forms.CharField(max_length=10, min_length=10, widget=forms.TextInput(attrs={'placeholder':'NPI', 'class':'bx_s'}))
 
 def index(request):
     request.session['dateVal'] = []
@@ -26,10 +36,17 @@ def index(request):
 
 def user(request):
     if request.user.is_authenticated:
-        u = appUsers.objects.get(user = request.user)
+        fav_doctors = []
+        u = request.user
+        dates = ClientDates.objects.filter(client=u)
+        if dates:
+            for d in dates:
+                if d.doctor not in fav_doctors:
+                    fav_doctors.append(d.doctor)
         return render(request, 'web/user.html', {
-            'dates': ClientDates.objects.filter(client=u),
-            'u': u
+            'dates': dates,
+            'u': u,
+            'favdoctors': fav_doctors
             })
             
     else:
@@ -51,6 +68,41 @@ def signin(request):
         
     return render(request, 'web/signin.html')
 
+def doc_signup(request):
+    form = createDocUser(request.POST)
+    ensurance = Ensurance.objects.all()
+    if request.method == 'POST':
+        if form.is_valid():
+            fname = form.cleaned_data['doc_fname']
+            lname = form.cleaned_data['doc_lname']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            confirmation = form.cleaned_data['password2']
+            phone = form.cleaned_data['phone']
+            username = form.cleaned_data['username']
+
+            if password != confirmation:
+                 return render(request, 'web/docsignup.html', {
+                    'pmessage':'Passwords wont match',
+                    'form':form
+                })
+        try:
+            docUser = User.objects.create_user(username = username, first_name = fname, last_name = lname, email = email, password = password)
+            docUser.save()
+            login(request, docUser)
+            return HttpResponseRedirect(reverse('user'))
+            
+        except IntegrityError:
+            return render(request, 'web/docsignup.html', {
+                    'umessage':'Username taken!',
+                    'form':form
+                })
+            
+    return render(request, 'web/docsignup.html', {
+        'form': createDocUser(),
+        'ensurance':ensurance
+    })
+
 def signup(request):
     form = createUser(request.POST)
     if request.method == 'POST':
@@ -69,8 +121,6 @@ def signup(request):
         try:
             user = User.objects.create_user(user_name, email, password)
             user.save()
-            appuser = appUsers.objects.create(user=user)
-            appuser.save()
             
         except IntegrityError:
             return render(request, 'web/signup.html', {
@@ -219,7 +269,7 @@ def makeDate(request, doc_id):
 
         if request.user.is_authenticated:
             try:
-                u = appUsers.objects.get(user=request.user)
+                u = request.user
 
                 # crear lista con los dias de la semana
                 datesDays, takenDates, p = cDateArgs(docdates, doc, newdate, hours, min)
@@ -257,7 +307,7 @@ def makeDate(request, doc_id):
         if p > len(datesDays) or date in takenDates:
             return HttpResponse(f'NO {newdate.strftime("%a")}{datesDays}{int(hours) + int(min) + 14400000}')
         else:  
-            ClientDates.objects.create(doctor=doc, clinic=clinic, date=newdate, client=appUsers.objects.get(user=request.user))
+            ClientDates.objects.create(doctor=doc, clinic=clinic, date=newdate, client=request.user)
             return HttpResponse(f'YES {newdate}')
 
 
